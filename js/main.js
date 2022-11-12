@@ -31,9 +31,16 @@ let game = {
   leagues: []
 };
 
+let situacion= {
+    "guesses": [],
+    "solution": null
+
+}
+localStorage.setItem("WAYgameState",JSON.stringify(situacion))
+
+
 function getSolution(players, sArray, difference_In_Days) {
-    //let id = sArray[diffinDays-1].id
-    let id = sArray[30].id
+    let id = sArray[diffinDays-1].id
     let jug = players["id"]
     let player = players.filter(r=>r.id==id)[0]
     return player;
@@ -59,6 +66,12 @@ Promise.all([fetchJSON("json/fullplayers.json"), fetchJSON("json/solution.json")
 
     autocomplete(document.getElementById("myInput"), game)
 
+      // YOUR CODE HERE
+    let addRow = setupRows( /* THIS NEEDS A PARAMETER */ );
+    // get myInput object...
+      // when the user types a number an press the Enter key:
+        addRow( /* the ID of the player, where is it? */);
+    //  
 
 
   }
