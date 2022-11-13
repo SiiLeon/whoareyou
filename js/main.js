@@ -1,7 +1,6 @@
-import { folder, leftArrow } from "./fragments.js";
+import { folder, leftArrow} from "./fragments.js";
 import { fetchJSON } from "./loaders.js";
 
-//CAMBIADO
 import {setupRows} from './rows.js';
 import {autocomplete} from './autocomplete.js'
 
@@ -15,7 +14,7 @@ function differenceInDays(timeStart) {
   }
 }
 
-let difference_In_Days = differenceInDays(new Date("08-18-2022"));
+let difference_In_Days = differenceInDays(new Date("2022-10-22"));
 
 window.onload = function () {
   document.getElementById(
@@ -32,18 +31,17 @@ let game = {
 };
 
 let situacion= {
-    "guesses": [],
-    "solution": null
-
+  "guesses": [],
+  "solution": null
 }
-localStorage.setItem("WAYgameState",JSON.stringify(situacion))
+
 
 
 function getSolution(players, sArray, difference_In_Days) {
-    let id = sArray[diffinDays-1].id
-    let jug = players["id"]
-    let player = players.filter(r=>r.id==id)[0]
-    return player;
+  let id = sArray[difference_In_Days-1].id
+  let jug = players["id"]
+  let player = players.filter(r=>r.id==id)[0]
+  return player;
 }
 
 Promise.all([fetchJSON("json/fullplayers.json"), fetchJSON("json/solution.json")]).then(
@@ -54,8 +52,6 @@ Promise.all([fetchJSON("json/fullplayers.json"), fetchJSON("json/solution.json")
     [game.players, solution] = values;
 
     game.solution = getSolution(game.players, solution, difference_In_Days);
-    
-    console.log(game.solution);
 
     document.getElementById(
       "mistery"
@@ -64,15 +60,45 @@ Promise.all([fetchJSON("json/fullplayers.json"), fetchJSON("json/solution.json")
     }/${game.solution.id}.png`;
 
 
+  let s=JSON.parse(localStorage.getItem("WAYgameState"))
+  localStorage.setItem("WAYgameState",JSON.stringify(situacion));
+
+  if(s!=null){
+  let fin=false;
+  let lastGuess=s.guesses[s.guesses.length-1]
+  if(lastGuess== game.solution.id || s.guesses.length==8 )fin=true;
+    console.log(fin)
+  let addRow = setupRows(game,fin);
+  let a=s.guesses;
+  a.forEach(g =>{
+      addRow(g);
+  })
+
+        
+
+}
+      
+  
+
     autocomplete(document.getElementById("myInput"), game)
+     
+    /* let addRow = setupRows(game);
+     
+    console.log('--------------------------------------------------');
 
-      // YOUR CODE HERE
-    let addRow = setupRows( /* THIS NEEDS A PARAMETER */ );
-    // get myInput object...
-      // when the user types a number an press the Enter key:
-        addRow( /* the ID of the player, where is it? */);
-    //  
+    let input = document.getElementById('myInput');
+    // when the user types a number an press the Enter key:
 
+    input.addEventListener('keydown', e => {
+         if(e.key=='Enter')
+         {
+           addRow(  game.guesses[game.guesses.length-1]);
+         }
+        
+    });
+    
+    */
 
   }
+  
 );

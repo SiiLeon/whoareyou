@@ -1,46 +1,51 @@
 // YOUR CODE HERE :  
 // .... stringToHTML ....
 // .... setupRows .....
+// .... initState ....
+
+
+
+import {stats,toggle,headless} from "./fragments.js";
+import {updateStats} from "./stats.js";
 export {setupRows}
 import {stringToHTML} from './fragments.js';
-import { higher,lower } from "./fragments.js";
-import {initState} from './stats.js'
+import {higher,lower} from "./fragments.js";
+import {initState} from './stats.js';
 
+// From: https://stackoverflow.com/a/7254108/243532
+function pad(a, b){
+    return(1e15 + a + '').slice(-b);
+}
 
 const delay = 350;
 const attribs = ['nationality', 'leagueId', 'teamId', 'position', 'birthdate']
-
-
-let setupRows = function (game) {
+let setupRows = function (game,fin) {
 
     let [state, updateState] = initState('WAYgameState', game.solution.id)
 
     function leagueToFlag(leagueId) {
-        //otra forma
-        let res='';
-        if(leagueId==564)
-        {
-            res='es1'
-        }
-        else if (leagueId==8)
-        {
-            res='en1';
-        }
-        else if (leagueId==82)
-        {
-            res='de1';
-        }
-        else if (leagueId==384)
-        {
-            res='it1';
-        }
-        else if (leagueId==301)
-        {
-            res='fr1';
-        }
-        return res;
+        
+            let esp = (leagueId==564);
+            let fra = (leagueId==301);
+            let ing = (leagueId==8);
+            let ale = (leagueId==82);
+            let ita = (leagueId==384);
+        
+            let res='';
+        
+            esp && ponerRes('es1');
+            ing && ponerRes('en1');
+            ita && ponerRes('it1');
+            ale && ponerRes('de1');
+            fra && ponerRes('fr1');
+        
+            function ponerRes(str)
+            {
+                res=str;
+            }
+        
+            return res;
     }
-
 
     function getAge(dateString) {
         let hoy = new Date();
@@ -72,19 +77,18 @@ let setupRows = function (game) {
         else if(theKey=='birthDate')
         {
             let edadPropuesta=getAge(theValue);
-            let edadJugador=getAge(jugadorMisterioso);
-    
+            let edadJugador=getAge(jugadorMisterioso.birthdate);
             if (edadPropuesta==edadJugador)
             {
-                res='correct';
+                res=edadPropuesta;
             }
             else if(edadJugador>edadPropuesta)
             {
-                res='higher';
+                res=edadPropuesta+higher;
             }
             else
             {
-                res='lower';
+                res=edadPropuesta+lower;
             }
             
     
@@ -96,7 +100,6 @@ let setupRows = function (game) {
     
         return res;
     }
-    //TERMINAR
     function obtenerJugadorMisterioso()
     {
         return game.solution;
@@ -121,14 +124,33 @@ let setupRows = function (game) {
         })
     }
 
+
+    function showStats(timeout) {
+        return new Promise( (resolve, reject) =>  {
+            setTimeout(() => {
+                document.body.appendChild(stringToHTML(headless(stats())));
+                document.getElementById("showHide").onclick = toggle;
+                bindClose();
+                resolve();
+            }, timeout)
+        })
+    }
+
+    function bindClose() {
+        document.getElementById("closedialog").onclick = function () {
+            document.body.removeChild(document.body.lastChild)
+            document.getElementById("mistery").classList.remove("hue-rotate-180", "blur")
+        }
+    }
+
+
     function setContent(guess) {
         return [
             `<img src="https://playfootball.games/who-are-ya/media/nations/${guess.nationality.toLowerCase()}.svg" alt="" style="width: 60%;">`,
             `<img src="https://playfootball.games/media/competitions/${leagueToFlag(guess.leagueId)}.png" alt="" style="width: 60%;">`,
             `<img src="https://cdn.sportmonks.com/images/soccer/teams/${guess.teamId % 32}/${guess.teamId}.png" alt="" style="width: 60%;">`,
             `${guess.position}`,
-            `${check('birthDate',getAge(guess.birthdate))}` /* YOUR CODE HERE */
-
+            `${check('birthDate',guess.birthdate)}`
         ]
     }
 
@@ -155,10 +177,11 @@ let setupRows = function (game) {
         playersNode.prepend(stringToHTML(child))
     }
 
+
     function resetInput(){
         let rr= document.getElementById('myInput')
         rr.value=""
-        rr.placeholder= 'Guess '+(game.guesses.length +1)+' of 8';
+        rr.placeholder= 'Guess '+(state.guesses.length +1)+' of 8';
     }
 
     let getPlayer = function (playerId) {
@@ -167,8 +190,9 @@ let setupRows = function (game) {
         return res[0];  
     }
 
+
     function gameEnded(lastGuess){
-        if(lastGuess== game.solution.id || (state.guesses.length==8 && lastGuess!= game.solution.id))return true
+        if(lastGuess== game.solution.id || state.guesses.length==8)return true
         return false
     }
 
@@ -179,35 +203,62 @@ let setupRows = function (game) {
 
     function success(){
         unblur('success')
+        showStats(20);
     }
     function gameOver(){
         unblur('gameOver')
+        showStats(20);
     }
 
     resetInput();
 
     return /* addRow */ function (playerId) {
-
+        
         let guess = getPlayer(playerId)
-        console.log(guess)
-
+        
         let content = setContent(guess)
+
         game.guesses.push(playerId)
         updateState(playerId)
 
         resetInput();
 
         if (gameEnded(playerId)) {
-            // updateStats(game.guesses.length);
-
-            if (playerId == game.solution.id) {
-               success();
+            if(fin==false)updateStats(game.guesses.length);
+                        
+            if (playerId == state.solution) {
+                success();
             }
 
             if (game.guesses.length == 8) {
                 gameOver();
             }
+
+
+            //TERMINAR
+            let interval = setInterval(cambiarTexto(),1);
+
+            function cambiarTexto() {
+                //let muestra=document.getElementById("nextPlayer");                
+                //muestra.value=tiempoAhora();  
+            }
+            /*
+            function tiempoAhora(){
+                
+                let mañana = "2021-02-26T00:00:00.000Z";
+                let ahora= Date.now();
+
+                let res=mañana-ahora;
+
+                return res;
+            }
+            */
+            
+
+
         }
+
+
         showContent(content, guess)
     }
 }
