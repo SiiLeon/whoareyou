@@ -93,6 +93,27 @@ let setupRows = function (game,fin) {
             
     
         }
+        else if(theKey=='number'){
+            console.log(res)
+            console.log(theValue)
+            let numerojugador=jugadorMisterioso.number;
+            if(theValue==numerojugador){
+                res=theValue;
+                console.log(res)
+                console.log(theValue)
+                
+            }
+            else if(numerojugador>theValue){
+                res=theValue+higher;
+                console.log(res)
+                console.log(theValue)
+            }
+            else{
+                res=theValue+lower;
+                console.log(res)
+                console.log(theValue)
+            }
+        }
         else
         {
             res='incorrect';
@@ -150,7 +171,8 @@ let setupRows = function (game,fin) {
             `<img src="https://playfootball.games/media/competitions/${leagueToFlag(guess.leagueId)}.png" alt="" style="width: 60%;">`,
             `<img src="https://cdn.sportmonks.com/images/soccer/teams/${guess.teamId % 32}/${guess.teamId}.png" alt="" style="width: 60%;">`,
             `${guess.position}`,
-            `${check('birthDate',guess.birthdate)}`
+            `${check('birthDate',guess.birthdate)}`,
+            `${check('number',guess.number)}`
         ]
     }
 
@@ -158,7 +180,7 @@ let setupRows = function (game,fin) {
         let fragments = '', s = '';
         for (let j = 0; j < content.length; j++) {
             s = "".concat(((j + 1) * delay).toString(), "ms")
-            fragments += `<div class="w-1/5 shrink-0 flex justify-center ">
+            fragments += `<div class="w-1/6 shrink-0 flex justify-center ">
                             <div class="mx-1 overflow-hidden w-full max-w-2 shadowed font-bold text-xl flex aspect-square rounded-full justify-center items-center bg-slate-400 text-white ${check(attribs[j], guess[attribs[j]]) == 'correct' ? 'bg-green-500' : ''} opacity-0 fadeInDown" style="max-width: 60px; animation-delay: ${s};">
                                 ${content[j]}
                             </div>
