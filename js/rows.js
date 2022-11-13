@@ -16,7 +16,7 @@ import {initState} from './stats.js';
 function pad(a, b){
     return(1e15 + a + '').slice(-b);
 }
-
+let comprob=false;
 const delay = 350;
 const attribs = ['nationality', 'leagueId', 'teamId', 'position', 'birthdate']
 let setupRows = function (game,fin) {
@@ -94,24 +94,20 @@ let setupRows = function (game,fin) {
     
         }
         else if(theKey=='number'){
-            console.log(res)
-            console.log(theValue)
+            
             let numerojugador=jugadorMisterioso.number;
             if(theValue==numerojugador){
                 res=theValue;
-                console.log(res)
-                console.log(theValue)
+            
                 
             }
             else if(numerojugador>theValue){
                 res=theValue+higher;
-                console.log(res)
-                console.log(theValue)
+         
             }
             else{
                 res=theValue+lower;
-                console.log(res)
-                console.log(theValue)
+          
             }
         }
         else
@@ -147,6 +143,7 @@ let setupRows = function (game,fin) {
 
 
     function showStats(timeout) {
+        
         return new Promise( (resolve, reject) =>  {
             setTimeout(() => {
                 document.body.appendChild(stringToHTML(headless(stats())));
@@ -225,11 +222,15 @@ let setupRows = function (game,fin) {
 
     function success(){
         unblur('success')
+        comprob=true;
         showStats(20);
+        
     }
     function gameOver(){
         unblur('gameOver')
+        comprob=true;
         showStats(20);
+        
     }
 
     resetInput();
@@ -258,23 +259,35 @@ let setupRows = function (game,fin) {
 
 
             //TERMINAR
-            let interval = setInterval(cambiarTexto(),1);
+            let interval = setInterval(cambiarTexto,1000);
 
             function cambiarTexto() {
-                //let muestra=document.getElementById("nextPlayer");                
-                //muestra.value=tiempoAhora();  
+                 if(comprob==true){               
+                    let muestra=document.getElementById("nextPlayer");                   
+                    muestra.innerText=tiempoAhora();  
+                }
+                
             }
-            /*
+            
             function tiempoAhora(){
                 
-                let mañana = "2021-02-26T00:00:00.000Z";
-                let ahora= Date.now();
-
-                let res=mañana-ahora;
-
-                return res;
+                    var  timeEnd = new Date();
+                    timeEnd.setHours(24, 0, 0, 0);
+                    var timeStart = new Date() 
+                      if (timeEnd > timeStart)
+                      {
+                           var diff = timeEnd.getTime() - timeStart.getTime();
+                            var hora = parseInt(diff/(1000 * 60 * 60))
+                            var  minuto = parseInt(((diff/(1000 * 60 * 60)) -hora )* 60)
+                            var seg = parseInt(((((diff/(1000 * 60 * 60))- hora )* 60) - minuto)*60)
+                    
+                    
+                          return(hora +"h "+ minuto+"m"+ seg +"s")
+                      }
+                    
+                
             }
-            */
+            
             
 
 

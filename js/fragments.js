@@ -106,6 +106,6 @@ adow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full s
                </svg></a>
                
                </div></div></div></div>`
-
+        
     return blocks
 }

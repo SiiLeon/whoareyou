@@ -45,22 +45,13 @@ let getStats = function(what) {
         res=JSON.parse(previo);
     }
 
-    /*
-    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-    console.log(res)
-    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-    */
-
     return res;
 };
 
 let gameStats = getStats('gameStats');
 
 function updateStats(t){
-    /*console.log('-------------------------------------');
-    console.log(t);
-    console.log('-------------------------------------');
-    */
+  
     gameStats.totalGames += 1;
     if(t<8)
     {
